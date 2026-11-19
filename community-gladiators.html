@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Community Gladiators · Registration</title>
+<link rel="stylesheet" href="assets/css/style.css"><link rel="stylesheet" href="assets/css/premium-polish.css">
+<style>
+.cg-wrap{max-width:960px;margin:auto;padding:32px 18px 70px}.cg-form{display:grid;gap:22px}.cg-panel{background:#141a25;border:1px solid #364055;border-radius:18px;padding:24px}.cg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.cg-field{display:grid;gap:7px}.cg-field input,.cg-field select,.cg-field textarea{width:100%;padding:12px;border:1px solid #566176;border-radius:8px;background:#0d1320;color:white}.cg-field label{font-weight:600}.cg-help{color:#aeb9c9;font-size:.9rem}.cg-player{padding:16px;border:1px solid #374154;border-radius:12px;margin:12px 0}.cg-player h3{margin-top:0}.cg-error{color:#ffb7b7}.cg-status{padding:12px;border-radius:8px}.cg-hidden{display:none}@media(max-width:650px){.cg-grid{grid-template-columns:1fr}.cg-panel{padding:16px}}
+</style></head><body>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="index.html"><span class="brand-emblem">M</span><span class="brand-title">CODM Tournament OS<small>Community Gladiators</small></span></a><nav class="nav-links"><a href="index.html">Home</a><a href="rules.html">Rulebook</a></nav></div></header>
+<main class="cg-wrap"><div class="eyebrow">Community Gladiators · December 2026</div><h1 class="h1">Tournament registration</h1><p class="lead">Register for one division. Your application will be reviewed by tournament administrators.</p>
+<section class="cg-panel"><h2>Account verification</h2><p class="cg-help">Sign in with a secure email link before submitting. This prevents anonymous submissions and lets you track your application.</p><div class="cg-grid"><div class="cg-field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="email"></div><div class="cg-field"><label>&nbsp;</label><button class="btn btn-primary" id="sendLink" type="button">Send sign-in link</button></div></div><p id="authMessage" role="status"></p></section>
+<form id="cgForm" class="cg-form cg-hidden">
+<section class="cg-panel"><h2>Representative</h2><div class="cg-grid">
+<div class="cg-field"><label for="repName">Full name *</label><input id="repName" required maxlength="120"></div>
+<div class="cg-field"><label for="repEmail">Email *</label><input id="repEmail" type="email" required maxlength="254"></div>
+<div class="cg-field"><label for="discordTag">Discord username *</label><input id="discordTag" required maxlength="80" placeholder="Not yet verified"></div>
+<div class="cg-field"><label for="region">Region *</label><select id="region" required><option value="">Choose region</option><option value="PH">Philippines</option><option value="MYSG">Malaysia / Singapore</option></select></div>
+<div class="cg-field cg-hidden" id="phContact"><label for="messenger">Facebook Messenger profile link *</label><input id="messenger" type="url" placeholder="https://www.facebook.com/..."></div>
+<div class="cg-field cg-hidden" id="mysgContact"><label for="whatsapp">WhatsApp number *</label><input id="whatsapp" type="tel" placeholder="+60... / +65..."></div>
+</div></section>
+<section class="cg-panel"><h2>Division</h2><div class="cg-grid"><div class="cg-field"><label for="division">Select one *</label><select id="division" required><option value="">Choose division</option><option value="battle_royale_solo">Battle Royale Solo</option><option value="battle_royale_squads">Battle Royale Squad (4 players)</option><option value="multiplayer_1v1">Multiplayer 1v1</option><option value="multiplayer_5v5">Multiplayer 5v5</option></select></div>
+<div class="cg-field cg-hidden" id="teamField"><label for="teamName">Team name *</label><input id="teamName" maxlength="100"></div>
+<div class="cg-field cg-hidden" id="tagField"><label for="teamTag">Team tag *</label><input id="teamTag" maxlength="16"></div>
+<div class="cg-field cg-hidden" id="logoField"><label for="teamLogo">Team logo URL (optional)</label><input id="teamLogo" type="url"></div>
+</div><div id="players"></div></section>
+<section class="cg-panel"><h2>Declaration</h2><label><input type="checkbox" id="ruleAgree" required> I have read and agree to the <a href="rules.html" target="_blank" rel="noopener">official rulebook</a>.</label><p><label><input type="checkbox" id="truthAgree" required> I confirm that all registration details are accurate and I am authorized to submit them.</label></p><p class="cg-help">Player IDs and contact information are collected for tournament administration. Do not submit another person's information without their permission.</p><button class="btn btn-primary" type="submit" id="submitBtn">Submit for review</button><p id="formMessage" role="status"></p></section></form>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="assets/js/config.js"></script><script src="assets/js/community-gladiators.js"></script></body></html>
