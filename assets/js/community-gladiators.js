@@ -1,0 +1,23 @@
+(() => {
+"use strict";
+const $=id=>document.getElementById(id);
+const slug=new URLSearchParams(location.search).get("tournament")||"community-gladiators-dec-2026";
+const count={battle_royale_solo:1,battle_royale_squads:4,multiplayer_1v1:1,multiplayer_5v5:5};
+let user=null;
+const value=id=>$(id)?.value.trim()||"";
+function message(id,text,error=false){$(id).textContent=text;$(id).className=error?"cg-error":"cg-help";}
+function field(label,key,type="text"){const div=document.createElement("div");div.className="cg-field";const l=document.createElement("label");l.textContent=label+" *";const i=document.createElement("input");i.type=type;i.required=true;i.maxLength=type==="url"?500:120;i.dataset.key=key;div.append(l,i);return div;}
+function renderPlayers(){const n=count[value("division")]||0;const holder=$("players");holder.replaceChildren();const team=n>1;for(const id of ["teamField","tagField","logoField"])$(id).classList.toggle("cg-hidden",!team);$("teamName").required=team;$("teamTag").required=team;
+for(let k=0;k<n;k++){const card=document.createElement("div");card.className="cg-player";const h=document.createElement("h3");h.textContent="Player "+(k+1);const grid=document.createElement("div");grid.className="cg-grid";grid.append(field("Full name","name"),field("In-game name (IGN)","ign"),field("UID","uid"),field("Open ID","open_id"));card.append(h,grid);holder.append(card);}}
+function regionChanged(){const ph=value("region")==="PH",mysg=value("region")==="MYSG";$("phContact").classList.toggle("cg-hidden",!ph);$("mysgContact").classList.toggle("cg-hidden",!mysg);$("messenger").required=ph;$("whatsapp").required=mysg;}
+function collectPlayers(){return [...document.querySelectorAll(".cg-player")].map((card,index)=>{const p={slot:index+1};card.querySelectorAll("[data-key]").forEach(input=>p[input.dataset.key]=input.value.trim());return p;});}
+async function auth(){const {data,error}=await window.sb.auth.getUser();if(error)throw error;user=data.user;$("cgForm").classList.toggle("cg-hidden",!user);message("authMessage",user?"Signed in as "+(user.email||"verified user"):"Sign in to enable registration.");if(user)$("repEmail").value=user.email||"";}
+$("region").addEventListener("change",regionChanged);$("division").addEventListener("change",renderPlayers);
+$("sendLink").addEventListener("click",async()=>{const email=value("loginEmail");if(!email)return message("authMessage","Enter your email.",true);$("sendLink").disabled=true;try{const {error}=await window.sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname+location.search}});if(error)throw error;message("authMessage","Check your email for the sign-in link.");}catch(e){message("authMessage",e.message,true);}finally{$("sendLink").disabled=false;}});
+$("cgForm").addEventListener("submit",async event=>{event.preventDefault();const players=collectPlayers(),ids=players.flatMap(p=>[p.uid.toLowerCase(),p.open_id.toLowerCase()]);if(new Set(players.map(p=>p.uid.toLowerCase())).size!==players.length||new Set(players.map(p=>p.open_id.toLowerCase())).size!==players.length)return message("formMessage","Duplicate player IDs within the roster.",true);
+if(value("repEmail").toLowerCase()!==(user?.email||"").toLowerCase())return message("formMessage","Representative email must match your signed-in account.",true);
+const payload={tournament_slug:slug,division:value("division"),region:value("region"),representative_name:value("repName"),representative_email:value("repEmail"),discord_username:value("discordTag"),messenger_url:value("messenger")||null,whatsapp_number:value("whatsapp")||null,team_name:value("teamName")||null,team_tag:value("teamTag")||null,team_logo_url:value("teamLogo")||null,players,rulebook_accepted:$("ruleAgree").checked,accuracy_confirmed:$("truthAgree").checked};
+$("submitBtn").disabled=true;message("formMessage","Submitting…");try{const {data,error}=await window.sb.rpc("submit_cg_registration",{payload});if(error)throw error;message("formMessage","Application received! Reference: "+data+". Status: pending review.");$("cgForm").reset();renderPlayers();regionChanged();}catch(e){message("formMessage",e.message||"Submission failed.",true);}finally{$("submitBtn").disabled=false;}});
+window.sb.auth.onAuthStateChange(()=>setTimeout(()=>auth().catch(e=>message("authMessage",e.message,true)),0));
+auth().catch(e=>message("authMessage",e.message,true));
+})();
